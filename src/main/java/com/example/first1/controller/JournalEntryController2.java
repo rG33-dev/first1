@@ -1,8 +1,11 @@
 package com.example.first1.controller;
 
 
+import ch.qos.logback.classic.joran.JoranConfigurator;
 import com.example.first1.Entity.JournalEntry;
 import com.example.first1.services.JournalEntryService;
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,47 +16,42 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/journal")
 public class JournalEntryController2 {
+    @Autowired
+    private JournalEntryService journalEntryService;
 
-    private final JournalEntryService journalEntryService;
-
-    public JournalEntryController2(JournalEntryService journalEntryService) {
-        this.journalEntryService = journalEntryService;
+    @GetMapping
+    public ResponseEntity<List<JournalEntry>> getAllJournalEntries() {
+      journalEntryService.findAll();
+      return new ResponseEntity<>(journalEntryService.findAll(), HttpStatus.OK);
     }
-
-
 
     @PostMapping
-    public JournalEntry createEntry(@RequestBody JournalEntry journalEntry) {
-        // Bug in the old code: the request body was the controller type, which Spring should never persist.
-        return journalEntryService.saveEntry(journalEntry);
-    }
-    @GetMapping
-    public List<JournalEntry> getAll() {
-        return journalEntryService.getAll();
+    public ResponseEntity<JournalEntry> saveJournalEntry(@RequestBody JournalEntry journalEntry) {
+      journalEntryService.saveEntry(journalEntry);
+      return new ResponseEntity<>(journalEntry, HttpStatus.CREATED);
     }
 
-    @GetMapping("/id/{id}")
-    public ResponseEntity<JournalEntry> getJournalEntry(@PathVariable String id) {
-        Optional<JournalEntry> journalEntry = journalEntryService.getById(id);
+    @GetMapping("id/{myId}")
+    public ResponseEntity<JournalEntry> getJournalEntryById(@PathVariable ObjectId myId) {
+        journalEntryService.findById(String.valueOf(myId));
 
-        return journalEntry
-                .map(entry -> new ResponseEntity<>(entry, HttpStatus.OK))
+        return null;
 
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+    @DeleteMapping
+    public ResponseEntity<JournalEntry> deleteJournalEntryById(@RequestBody ObjectId myId) {
+        journalEntryService.deleteById(String.valueOf(myId));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @PostMapping("id/{myid}")
+    public JournalEntry updateJournalEntry(@RequestBody JournalEntry journalEntry, @PathVariable ObjectId myId) {
+        journalEntry.setId(String.valueOf(myId));
+        journalEntryService.saveEntry(journalEntry);
+        return journalEntry;
     }
 
 
-    @DeleteMapping("/id/{id}")
-    public void deleteEntry(@PathVariable String id) {
-        journalEntryService.deleteById(id);
-    }
 
-    @PutMapping("/id/{id}")
-    public JournalEntry updateEntry(@PathVariable String id, @RequestBody JournalEntry journalEntry) {
-        // Bug in the old code: Spring MVC accepts one request body, not two.
-        journalEntry.setId(id);
-        return journalEntryService.saveEntry(journalEntry);
-    }
 }
 
 

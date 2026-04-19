@@ -3,33 +3,39 @@ package com.example.first1.services;
 
 import com.example.first1.services.JournalEntryRepo.Repo;
 import com.example.first1.Entity.JournalEntry;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
-@Service
+
+@Component
 public class JournalEntryService {
 
-    private final Repo journalEntryRepo;
+    @Autowired
+    private Repo repo;
 
-    public JournalEntryService(Repo journalEntryRepo) {
-        this.journalEntryRepo = journalEntryRepo;
+    public void saveEntry(JournalEntry journalEntry) {
+        repo.save(journalEntry);
     }
 
-    public List<JournalEntry> getAll() {
-        return journalEntryRepo.findAll();
+    public List<JournalEntry> findAll() {
+        return repo.findAll();
     }
 
-    public JournalEntry saveEntry(JournalEntry journalEntry) {
-        return journalEntryRepo.save(journalEntry);
-    }
+    public void findById(String id) {
+        repo.findById(id);
 
-    public Optional<JournalEntry> getById(String id) {
-        return journalEntryRepo.findById(id);
     }
 
     public void deleteById(String id) {
-        journalEntryRepo.deleteById(id);
+        repo.deleteById(id);
+
     }
+
+
+
+
+
+
 }

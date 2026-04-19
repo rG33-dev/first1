@@ -11,5 +11,4 @@ public class JournalApp {
 
 		SpringApplication.run(JournalApp.class, args);
 	}
-
 }
