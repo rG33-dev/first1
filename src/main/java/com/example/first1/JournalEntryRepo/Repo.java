@@ -1,4 +1,4 @@
-package com.example.first1.services.JournalEntryRepo;
+package com.example.first1.JournalEntryRepo;
 
 import com.example.first1.Entity.JournalEntry;
 import org.springframework.data.mongodb.repository.MongoRepository;

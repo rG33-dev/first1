@@ -370,3 +370,110 @@ Before adding a new feature, verify:
 7. Is the code using the same package root as the application?
 
 If those seven things are clear first, most of the current bugs do not happen.
+
+## 18. Incomplete user controller implementation
+
+### What happened
+
+`UserEntryController.kt` stopped in the middle of an unfinished update method:
+
+- it called `saveUserEntry` with the wrong arguments
+- it passed a `User` object to a method that expected a username string
+- it ended with `userInDb.se`
+
+### Why this was wrong
+
+That was a hard compilation failure, so the application could not even build.
+
+### Lesson
+
+Partially written endpoints should not stay in the active codebase. Finish them or remove them until they are ready.
+
+## 19. User entity and repository used different id types
+
+### What happened
+
+The `User` entity declared an `Int?` id while the repository was `MongoRepository<User, ObjectId>`.
+
+### Why this was wrong
+
+The repository generic id type must match the entity id type. If they differ, CRUD operations and method signatures become inconsistent and error-prone.
+
+### Lesson
+
+Choose one id type and use it everywhere for that entity.
+
+## 20. User service was missing `@Service`
+
+### What happened
+
+`UserEntryService` had no Spring stereotype annotation.
+
+### Why this was wrong
+
+Spring would not register it as a bean, which would break dependency injection into the controller at runtime.
+
+### Lesson
+
+If a class is meant to be injected as a service, mark it with `@Service`.
+
+## 21. Journal update used `POST` instead of `PUT`
+
+### What happened
+
+The journal controller used `@PostMapping("id/{myid}")` for update logic.
+
+### Why this was wrong
+
+`POST` is generally for creation. Updates should use `PUT` or `PATCH`, especially when the resource id is already known in the route.
+
+### Lesson
+
+Match the HTTP method to the operation semantics.
+
+## 22. Journal delete took the id from the request body
+
+### What happened
+
+The delete endpoint expected an `ObjectId` as `@RequestBody`.
+
+### Why this was wrong
+
+For resource deletion by identifier, the normal API shape is `DELETE /resource/{id}` with the id in the path. Putting the id in the body complicates the API and is inconsistent with the rest of the controller.
+
+### Lesson
+
+Use `@PathVariable` for resource identifiers.
+
+## 23. Production controller contained a large commented archive
+
+### What happened
+
+`JournalEntryController2.java` contained a long commented historical version of the controller below the live code.
+
+### Why this was wrong
+
+It made the file noisy and increased the risk of reusing stale code accidentally.
+
+### Lesson
+
+Keep teaching notes and history in documentation files, not inside production classes.
+
+## 24. Kotlin files were in the Java source tree
+
+### What happened
+
+Kotlin files were stored under `src/main/java`, and the build reported duplicate-source-root warnings.
+
+### Why this was wrong
+
+The app could still try to compile, but the source layout was non-standard and made the mixed Java/Kotlin build harder to maintain.
+
+### Lesson
+
+Use the conventional layout:
+
+- `src/main/java`
+- `src/main/kotlin`
+- `src/test/java`
+- `src/test/kotlin`
