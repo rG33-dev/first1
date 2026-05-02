@@ -43,9 +43,7 @@ public class UserEntryService {
         User userInDb = existingUser.get();
         user.setId(userInDb.getId());
         user.setUsername(username);
-        if (user.getJournalEntries() == null) {
-            user.setJournalEntries(userInDb.getJournalEntries());
-        }
+        user.getJournalEntries();
         return userRepo.save(user);
     }
 

@@ -477,3 +477,6 @@ Use the conventional layout:
 - `src/main/kotlin`
 - `src/test/java`
 - `src/test/kotlin`
+### Connection ERROR while using mongoDB
+not able to connect through , thought its port or code issue, issue was due to  directory deletion? 
+recreated dorecory to establish connection again
