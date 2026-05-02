@@ -4,7 +4,7 @@ This file records the mistakes that showed up in this project so far, why they w
 
 ## 1. Mixing an in-memory controller with a MongoDB controller
 
-### What happened
+### What happened 
 
 The Mongo-backed controller was created by copying the in-memory controller and then modifying it only partially.
 
