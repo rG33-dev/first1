@@ -479,4 +479,24 @@ Use the conventional layout:
 - `src/test/kotlin`
 ### Connection ERROR while using mongoDB
 not able to connect through , thought its port or code issue, issue was due to  directory deletion? 
-recreated dorecory to establish connection again
+recreated directory to establish connection again
+# Remove old MongoDB socket file that may block startup
+sudo rm /tmp/mongodb-27017.sock
+
+# Create MongoDB data directory if it doesn't exist
+sudo mkdir -p /data/db
+
+# Give current user permission to access MongoDB data directory
+sudo chown -R $USER /data/db
+
+# Start MongoDB server manually on localhost:27017
+mongod
+
+# OPTIONAL: Open Mongo shell to verify MongoDB is running
+mongosh
+
+# OPTIONAL (alternative to mongod): Start MongoDB as system service
+sudo systemctl start mongod
+
+# OPTIONAL: Check MongoDB service status
+sudo systemctl status mongod

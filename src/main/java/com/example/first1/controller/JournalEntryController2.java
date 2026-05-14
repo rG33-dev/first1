@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/journal")
+@RequestMapping("/journaldb")
 public class JournalEntryController2 {
     private final JournalEntryService journalEntryService;
 

@@ -4,7 +4,7 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.Instant
 
-@Document(collection = "journal")
+@Document(collection = "journaldb2")
 data class JournalEntry(
     @Id
     var id: String? = null,
